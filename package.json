@@ -1,40 +1,37 @@
 {
   "name": "omniflow",
   "version": "1.0.0",
-  "description": "OmniFlow - Multi-Agent Collaboration Desktop Tool for Information Processing",
+  "description": "OmniFlow - Multi-Agent DAG workflow desktop tool for information processing",
   "main": "dist-electron/main.js",
   "bin": {
-    "omniflow": "cli/index.ts"
+    "omniflow": "dist-cli/cli/index.js"
   },
+  "files": [
+    "dist-cli/**/*",
+    "skills/",
+    "README.md"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:cli": "tsc -p tsconfig.cli.json",
+    "build:all": "npm run build && npm run build:cli",
     "preview": "vite preview",
     "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "electron:build": "npm run build && electron-builder",
     "cli": "npx tsx cli/index.ts",
     "cli:run": "npx tsx cli/index.ts run",
     "cli:repl": "npx tsx cli/index.ts repl",
+    "prepack": "npm run build:cli",
     "lint": "eslint . --ext ts,tsx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.1",
     "@google/generative-ai": "^0.21.0",
-    "@xyflow/react": "^12.3.6",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.460.0",
-    "marked": "^15.0.4",
     "ollama": "^0.5.12",
     "openai": "^4.73.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-markdown": "^9.0.1",
-    "react-syntax-highlighter": "^15.6.1",
-    "tailwind-merge": "^2.5.5",
-    "uuid": "^10.0.0",
-    "zustand": "^5.0.1"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
@@ -42,18 +39,29 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@xyflow/react": "^12.3.6",
     "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "concurrently": "^9.1.0",
     "electron": "^33.2.0",
     "electron-builder": "^25.1.8",
+    "lucide-react": "^0.460.0",
+    "marked": "^15.0.4",
     "postcss": "^8.4.49",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.6.1",
+    "tailwind-merge": "^2.5.5",
     "tailwindcss": "^3.4.15",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "vite": "^6.0.3",
     "vite-plugin-electron": "^0.28.8",
     "vite-plugin-electron-renderer": "^0.14.6",
-    "wait-on": "^8.0.1"
+    "wait-on": "^8.0.1",
+    "zustand": "^5.0.1"
   },
   "build": {
     "appId": "com.omniflow.app",
@@ -64,6 +72,9 @@
     "files": [
       "dist/**/*",
       "dist-electron/**/*"
+    ],
+    "extraResources": [
+      "skills"
     ],
     "win": {
       "target": "nsis",

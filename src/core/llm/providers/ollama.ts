@@ -20,6 +20,6 @@ export async function chatWithOllama(config: LLMConfig, systemPrompt: string, us
     }),
   })
 
-  const data = await response.json()
+  const data = await response.json() as { message?: { content?: string } }
   return data.message?.content || ''
 }

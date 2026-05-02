@@ -39,30 +39,71 @@ The Orchestrator → Verifier → Generator loop enables multi-round optimizatio
 ### Prerequisites
 
 - Node.js 18+
-- npm or pnpm
 
-### Development
+### CLI (Command Line)
+
+```bash
+# Install globally
+npm install -g omniflow
+
+# One-shot task execution
+omniflow run "整理项目进度报告"
+
+# Interactive REPL mode
+omniflow repl
+
+# Specify model
+omniflow --model openai:gpt-4o run "分析合同风险"
+
+# Pipe input
+echo "总结这篇文章" | omniflow run
+
+# Save output to file
+omniflow run "生成周报" -o report.md
+
+# Manage LLM configs
+omniflow config add openai gpt-4o sk-xxx
+omniflow config list
+
+# Manage skills
+omniflow skill list
+omniflow skill add ./my-skill
+```
+
+### Desktop App
 
 ```bash
 # Install dependencies
 npm install
 
-# Run in development mode
+# Development mode
 npm run electron:dev
-```
 
-### Build
-
-```bash
+# Build installers
 npm run electron:build
+# Output: release/OmniFlow Setup 1.0.0.exe (NSIS installer)
+#         release/OmniFlow-1.0.0-win.zip (Portable)
 ```
 
 ## Configuration
 
+### GUI
 1. Launch OmniFlow
 2. Click the gear icon in the bottom-right to open Settings
 3. Add your LLM configuration (provider, model, API key)
 4. Select a working directory for file operations
+
+### CLI
+```bash
+# Add a model
+omniflow config add openai gpt-4o sk-your-key
+
+# List configured models
+omniflow config list
+```
+
+Settings stored at `~/.omniflow/settings.json`
+
 
 ## Skills
 

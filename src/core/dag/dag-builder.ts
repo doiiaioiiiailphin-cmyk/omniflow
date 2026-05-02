@@ -17,7 +17,7 @@ export function buildDAG(orchestratorOutput: string, taskSummary: string): DAGEx
     return {
       id: generateId(),
       nodes: [
-        createNode('generator', taskSummary, [], []),
+        createNode('generator', taskSummary, generateId(), []),
       ],
       status: 'idle',
       startedAt: Date.now(),

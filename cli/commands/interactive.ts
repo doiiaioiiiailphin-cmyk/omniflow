@@ -16,7 +16,8 @@ interface InteractiveOptions {
 }
 
 export async function startInteractive(options: InteractiveOptions): Promise<void> {
-  const { settings, workDir, modelOverride, verbose } = options
+  const { settings, workDir, modelOverride } = options
+  let verbose = options.verbose
   const llmConfigs = (settings.llmConfigs as Array<Record<string, unknown>>) || []
 
   const builtinSkillsPath = path.join(__dirname, '..', '..', 'skills')

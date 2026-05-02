@@ -40,7 +40,7 @@ export async function manageConfig(options: ConfigOptions): Promise<void> {
       if (!apiKey) {
         process.stdout.write('  API Key: ')
         const buf = Buffer.alloc(1024)
-        const len = fs.readSync(0, buf, 0, 1024)
+        const len = fs.readSync(0, buf, 0, 1024, 0)
         apiKey = buf.toString('utf-8', 0, len).trim()
       }
 
