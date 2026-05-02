@@ -471,20 +471,20 @@ omniflow -v run "Analyze the quarterly financial data"</code></pre>
       </ol>
 
       <h3>CLI</h3>
-      <pre><code># OpenAI
-omniflow config add openai gpt-4o sk-proj-xxxx
+      <pre><code># OpenAI latest
+omniflow config add openai gpt-4.1 sk-proj-xxxx
 
-# Anthropic
-omniflow config add anthropic claude-sonnet-4-20250514 sk-ant-xxxx
+# Anthropic latest
+omniflow config add anthropic claude-opus-4-7 sk-ant-xxxx
 
 # DeepSeek
 omniflow config add deepseek deepseek-chat sk-xxxx
 
 # Google Gemini
-omniflow config add google gemini-2.0-flash AIza-xxxx
+omniflow config add google gemini-2.5-pro AIza-xxxx
 
 # Local Ollama (no key needed)
-omniflow config add ollama qwen2.5:14b local</code></pre>
+omniflow config add ollama qwen3:14b local</code></pre>
     </section>
 
     <!-- Skills -->
@@ -528,16 +528,16 @@ You are a specialized assistant. Your task is to...</code></pre>
     <!-- Models -->
     <section id="models">
       <h2>Supported Models</h2>
-      <p>OmniFlow ships with 34+ preset models across 6 providers. You can also use any OpenAI-compatible API.</p>
+      <p>OmniFlow ships with <strong>70+ preset models</strong> across 6 providers. You can also use any OpenAI-compatible API.</p>
 
       <table>
         <tr><th>Provider</th><th>Models</th></tr>
-        <tr><td><strong>OpenAI</strong></td><td>GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-4, GPT-3.5 Turbo, o1-preview, o1-mini</td></tr>
-        <tr><td><strong>Anthropic</strong></td><td>Claude Sonnet 4, Claude 3.5 Sonnet/Haiku, Claude 3 Opus/Sonnet/Haiku</td></tr>
-        <tr><td><strong>Google</strong></td><td>Gemini 2.0 Flash, Gemini 2.0 Pro Exp, Gemini 1.5 Pro/Flash</td></tr>
+        <tr><td><strong>OpenAI</strong></td><td>GPT-4.1 / 4.1 Mini / 4.1 Nano, GPT-4o / 4o Mini, GPT-4.5 Preview, o4-mini, o3 / o3-mini, o1</td></tr>
+        <tr><td><strong>Anthropic</strong></td><td>Claude Opus 4.7, Claude Sonnet 4.6, Claude Haiku 4.5, Claude Opus 4.6 / 4.5 / 4.1, Claude Sonnet 4.5 / 4</td></tr>
+        <tr><td><strong>Google</strong></td><td>Gemini 2.5 Pro / 2.5 Flash, Gemini 2.0 Flash / Flash Lite, Gemini 1.5 Pro / Flash</td></tr>
         <tr><td><strong>DeepSeek</strong></td><td>DeepSeek V3 (chat), DeepSeek R1 (reasoner)</td></tr>
-        <tr><td><strong>Ollama</strong></td><td>Llama 3.2, Llama 3.1 70B, Qwen 2.5 (14B/32B/72B), Mistral Nemo, Codestral, DeepSeek Coder V2, Gemma 2 27B, Phi-3 Medium</td></tr>
-        <tr><td><strong>OpenRouter</strong></td><td>GPT-4o, Claude 3.5 Sonnet, Gemini 2.0 Flash, Llama 3.3 70B, DeepSeek V3</td></tr>
+        <tr><td><strong>Ollama</strong></td><td>Llama 3.3 / 3.2, Qwen 3 (30B/14B/8B), Qwen 2.5 (72B/32B/14B/7B) + Coder 32B, DeepSeek R1 (70B/32B/14B/8B), Mistral Large/Small/Nemo, Codestral, Phi-4 14B / Mini 3.8B, Gemma 3 (27B/12B/4B), Command R+ / R</td></tr>
+        <tr><td><strong>OpenRouter</strong></td><td>GPT-4.1, o4-mini, o3, GPT-4o, Claude Opus 4.7 / Sonnet 4.6, Gemini 2.5 Pro / Flash, DeepSeek V3 / R1, Llama 4 Maverick, Llama 3.3, Qwen 3</td></tr>
       </table>
     </section>
 
@@ -549,7 +549,7 @@ You are a specialized assistant. Your task is to...</code></pre>
       <p>API keys are stored locally in <code>~/.omniflow/settings.json</code>. They are only transmitted to the LLM provider endpoint you configure. Keys are never sent to our servers (we don&apos;t have any).</p>
 
       <h3>Can I use local models without internet?</h3>
-      <p>Yes. Install <a href="https://ollama.com">Ollama</a>, pull a model (e.g. <code>ollama pull qwen2.5:14b</code>), then add it in OmniFlow with any placeholder API key. All inference runs locally.</p>
+      <p>Yes. Install <a href="https://ollama.com">Ollama</a>, pull a model (e.g. <code>ollama pull qwen3:14b</code>), then add it in OmniFlow with any placeholder API key. All inference runs locally.</p>
 
       <h3>How does the feedback loop work?</h3>
       <p>When a Verifier agent scores the output below 6/10, it generates feedback. The DAG engine passes this feedback back to the Generator and re-runs it. This happens up to 3 times.</p>
