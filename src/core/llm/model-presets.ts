@@ -9,7 +9,6 @@ export const MODEL_PRESETS: { provider: string; models: { id: string; name: stri
       { id: 'gpt-4.1-nano', name: 'GPT-4.1 Nano', maxTokens: 16384, contextWindow: 1048576 },
       { id: 'gpt-4o', name: 'GPT-4o', maxTokens: 16384, contextWindow: 128000 },
       { id: 'gpt-4o-mini', name: 'GPT-4o Mini', maxTokens: 16384, contextWindow: 128000 },
-      { id: 'gpt-4.5-preview', name: 'GPT-4.5 Preview', maxTokens: 16384, contextWindow: 128000 },
       { id: 'o4-mini', name: 'o4-mini', maxTokens: 100000, contextWindow: 200000 },
       { id: 'o3', name: 'o3', maxTokens: 100000, contextWindow: 200000 },
       { id: 'o3-mini', name: 'o3-mini', maxTokens: 100000, contextWindow: 200000 },
@@ -28,7 +27,7 @@ export const MODEL_PRESETS: { provider: string; models: { id: string; name: stri
       { id: 'claude-sonnet-4-5-20250929', name: 'Claude Sonnet 4.5', maxTokens: 64000, contextWindow: 200000 },
       { id: 'claude-opus-4-5-20251101', name: 'Claude Opus 4.5', maxTokens: 64000, contextWindow: 200000 },
       { id: 'claude-opus-4-1-20250805', name: 'Claude Opus 4.1', maxTokens: 32000, contextWindow: 200000 },
-      { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4', maxTokens: 64000, contextWindow: 200000 },
+      { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4 (deprecated)', maxTokens: 64000, contextWindow: 200000 },
     ],
   },
   {
@@ -45,8 +44,10 @@ export const MODEL_PRESETS: { provider: string; models: { id: string; name: stri
   {
     provider: 'deepseek',
     models: [
-      { id: 'deepseek-chat', name: 'DeepSeek V3', maxTokens: 8192, contextWindow: 131072 },
-      { id: 'deepseek-reasoner', name: 'DeepSeek R1', maxTokens: 8192, contextWindow: 131072 },
+      { id: 'deepseek-v4-pro', name: 'DeepSeek V4 Pro', maxTokens: 384000, contextWindow: 1048576 },
+      { id: 'deepseek-v4-flash', name: 'DeepSeek V4 Flash', maxTokens: 384000, contextWindow: 1048576 },
+      { id: 'deepseek-chat', name: 'DeepSeek V3 (deprecated)', maxTokens: 8192, contextWindow: 131072 },
+      { id: 'deepseek-reasoner', name: 'DeepSeek R1 (deprecated)', maxTokens: 8192, contextWindow: 131072 },
     ],
   },
   {
@@ -54,7 +55,6 @@ export const MODEL_PRESETS: { provider: string; models: { id: string; name: stri
     models: [
       { id: 'llama3.3:70b', name: 'Llama 3.3 70B', maxTokens: 8192, contextWindow: 131072 },
       { id: 'llama3.2', name: 'Llama 3.2', maxTokens: 4096, contextWindow: 131072 },
-      { id: 'llama3.2:1b', name: 'Llama 3.2 1B', maxTokens: 2048, contextWindow: 131072 },
       { id: 'qwen3:30b', name: 'Qwen 3 30B', maxTokens: 8192, contextWindow: 131072 },
       { id: 'qwen3:14b', name: 'Qwen 3 14B', maxTokens: 8192, contextWindow: 131072 },
       { id: 'qwen3:8b', name: 'Qwen 3 8B', maxTokens: 8192, contextWindow: 131072 },
@@ -91,8 +91,8 @@ export const MODEL_PRESETS: { provider: string; models: { id: string; name: stri
       { id: 'anthropic/claude-sonnet-4-6', name: 'Claude Sonnet 4.6', maxTokens: 64000, contextWindow: 1000000 },
       { id: 'google/gemini-2.5-pro', name: 'Gemini 2.5 Pro', maxTokens: 65536, contextWindow: 2097152 },
       { id: 'google/gemini-2.5-flash', name: 'Gemini 2.5 Flash', maxTokens: 32768, contextWindow: 1048576 },
-      { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3', maxTokens: 8192, contextWindow: 131072 },
-      { id: 'deepseek/deepseek-reasoner', name: 'DeepSeek R1', maxTokens: 8192, contextWindow: 131072 },
+      { id: 'deepseek/deepseek-v4-pro', name: 'DeepSeek V4 Pro', maxTokens: 384000, contextWindow: 1048576 },
+      { id: 'deepseek/deepseek-v4-flash', name: 'DeepSeek V4 Flash', maxTokens: 384000, contextWindow: 1048576 },
       { id: 'meta-llama/llama-4-maverick', name: 'Llama 4 Maverick', maxTokens: 4096, contextWindow: 131072 },
       { id: 'meta-llama/llama-3.3-70b-instruct', name: 'Llama 3.3 70B', maxTokens: 8192, contextWindow: 131072 },
       { id: 'qwen/qwen3-30b', name: 'Qwen 3 30B', maxTokens: 8192, contextWindow: 131072 },
