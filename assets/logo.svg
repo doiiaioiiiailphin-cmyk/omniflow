@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+    <linearGradient id="main" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="50%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#34d399"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444"/>
+      <stop offset="100%" style="stop-color:#f87171"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="100" ry="100" fill="url(#bg)"/>
+
+  <!-- Outer ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#main)" stroke-width="6" opacity="0.4"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="url(#main)" stroke-width="3" opacity="0.2"/>
+
+  <!-- Center O shape with gradient -->
+  <circle cx="256" cy="256" r="100" fill="none" stroke="url(#main)" stroke-width="14" filter="url(#glow)"/>
+
+  <!-- Connection nodes around the ring - representing DAG agents -->
+  <!-- Top - Orchestrator (blue) -->
+  <circle cx="256" cy="106" r="22" fill="url(#main)" filter="url(#glow)"/>
+  <circle cx="256" cy="106" r="14" fill="#0f172a"/>
+  <circle cx="256" cy="106" r="8" fill="url(#main)"/>
+
+  <!-- Top-right - Retriever (green) -->
+  <circle cx="380" cy="170" r="18" fill="url(#green)" filter="url(#glow)"/>
+  <circle cx="380" cy="170" r="10" fill="#0f172a"/>
+  <circle cx="380" cy="170" r="6" fill="url(#green)"/>
+
+  <!-- Right - Summarizer (amber) -->
+  <circle cx="410" cy="290" r="18" fill="url(#amber)" filter="url(#glow)"/>
+  <circle cx="410" cy="290" r="10" fill="#0f172a"/>
+  <circle cx="410" cy="290" r="6" fill="url(#amber)"/>
+
+  <!-- Bottom-right - Generator (purple) -->
+  <circle cx="360" cy="390" r="22" fill="url(#purple)" filter="url(#glow)"/>
+  <circle cx="360" cy="390" r="13" fill="#0f172a"/>
+  <circle cx="360" cy="390" r="8" fill="url(#purple)"/>
+
+  <!-- Bottom - Verifier (red) -->
+  <circle cx="256" cy="420" r="16" fill="url(#red)" filter="url(#glow)"/>
+  <circle cx="256" cy="420" r="9" fill="#0f172a"/>
+  <circle cx="256" cy="420" r="5" fill="url(#red)"/>
+
+  <!-- Flow connection lines (DAG edges) -->
+  <path d="M267 124 Q290 140 370 164" fill="none" stroke="url(#main)" stroke-width="2" stroke-dasharray="6,4" opacity="0.6"/>
+  <path d="M390 184 Q400 230 403 278" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6,4" opacity="0.5"/>
+  <path d="M404 304 Q395 340 370 378" fill="none" stroke="#6366f1" stroke-width="2" stroke-dasharray="6,4" opacity="0.5"/>
+  <path d="M345 404 Q310 415 275 416" fill="none" stroke="url(#red)" stroke-width="2" stroke-dasharray="6,4" opacity="0.6"/>
+  <!-- Feedback loop -->
+  <path d="M248 415 Q220 380 245 365" fill="none" stroke="url(#red)" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
+
+  <!-- Inner flow detail -->
+  <path d="M210 200 Q240 240 210 280 Q180 320 210 360" fill="none" stroke="url(#main)" stroke-width="2" opacity="0.3"/>
+</svg>
