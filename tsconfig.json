@@ -20,6 +20,6 @@
       "@components/*": ["src/renderer/components/*"]
     }
   },
-  "include": ["src", "electron"],
+  "include": ["src", "electron", "cli"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
