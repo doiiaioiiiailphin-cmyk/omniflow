@@ -61,10 +61,10 @@ export async function runTask(options: RunOptions): Promise<void> {
   console.log(`  目录: ${workDir}`)
   console.log(`  任务: ${task}\n`)
 
-  startSpinner('编排任务 DAG...')
+  startSpinner('分析任务...')
 
   let firstProgress = true
-  const execution = await executeTask(config, task, (dag) => {
+  const result = await executeTask(config, task, (dag) => {
     stopSpinner()
     if (firstProgress) {
       console.log(`\n  DAG 已构建 — ${dag.nodes.length} 个子任务\n`)
@@ -79,20 +79,11 @@ export async function runTask(options: RunOptions): Promise<void> {
 
   stopSpinner()
 
-  if (verbose) {
-    printSummary(execution, verbose)
+  if (verbose && result.dag) {
+    printSummary(result.dag, verbose)
   }
 
-  // Collect final output
-  const finalOutputs = execution.nodes
-    .filter(n => n.agentType === 'generator' && n.result)
-    .map(n => `## ${n.task}\n\n${n.result!.output}`)
-    .join('\n\n')
-
-  const output = finalOutputs || execution.nodes
-    .filter(n => n.result)
-    .map(n => n.result!.output)
-    .join('\n\n')
+  const output = result.response
 
   if (outputFile) {
     fs.writeFileSync(outputFile, output, 'utf-8')

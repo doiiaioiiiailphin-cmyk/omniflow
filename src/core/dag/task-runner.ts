@@ -1,5 +1,5 @@
-import { LLMConfig, DAGNode, DAGExecution, ExecutionStatus, AgentResult } from '../types'
-import { runOrchestrator } from '../agents/orchestrator'
+import { LLMConfig, DAGNode, DAGExecution, AgentResult } from '../types'
+import { classifyIntent, decomposeTask, synthesizeResponse } from '../agents/orchestrator'
 import { runRetriever } from '../agents/retriever'
 import { runSummarizer } from '../agents/summarizer'
 import { runGenerator } from '../agents/generator'
@@ -11,34 +11,45 @@ export interface TaskProgressCallback {
   (execution: DAGExecution): void
 }
 
+export interface TaskResult {
+  type: 'chat' | 'task'
+  response: string
+  dag?: DAGExecution
+}
+
 export async function executeTask(
   config: LLMConfig,
   userTask: string,
   onProgress: TaskProgressCallback
-): Promise<DAGExecution> {
-  // Step 1: Orchestrator breaks down the task
-  const orchResult = await runOrchestrator(config, userTask)
+): Promise<TaskResult> {
+  // Phase 1: Classify intent
+  const intent = await classifyIntent(config, userTask)
+
+  if (intent.intent === 'chat') {
+    return { type: 'chat', response: intent.response || '你好！有什么可以帮你的？' }
+  }
+
+  // Phase 2: Decompose task into DAG
+  const orchResult = await decomposeTask(config, userTask)
   const orchJson = extractJson<{ taskSummary: string }>(orchResult.output)
   const taskSummary = orchJson?.taskSummary || userTask
 
-  // Step 2: Build DAG
   const execution = buildDAG(orchResult.output, taskSummary)
   execution.status = 'running'
   onProgress({ ...execution })
 
+  // Phase 3: Execute DAG
   const MAX_ITERATIONS = 3
   let iteration = 0
 
   while (iteration < MAX_ITERATIONS) {
     iteration++
 
-    // Process all ready nodes
     let hasMore = true
     while (hasMore) {
       const ready = getReadyNodes(execution.nodes)
       if (ready.length === 0) break
 
-      // Execute ready nodes in parallel
       const results = await Promise.allSettled(
         ready.map(node => executeNode(config, node, execution, userTask))
       )
@@ -61,29 +72,26 @@ export async function executeTask(
       if (anyNodeFailed(execution.nodes)) {
         execution.status = 'failed'
         execution.completedAt = Date.now()
-        return execution
+        return { type: 'task', response: '任务执行失败，部分 Agent 未能完成。', dag: execution }
       }
     }
 
-    // Step 3: Check for verifier feedback loop
+    // Verifier feedback loop
     const verifierNode = execution.nodes.find(n => n.agentType === 'verifier' && n.status === 'completed')
     if (verifierNode && verifierNode.result) {
       const verifyResult = extractJson<{ passed: boolean; score: number; issues: { severity: string; description: string; suggestion: string }[]; summary: string }>(verifierNode.result.output)
 
       if (verifyResult && verifyResult.passed === false && verifyResult.score < 6 && iteration < MAX_ITERATIONS) {
-        // Find the generator node and re-run with feedback
         const generatorNode = execution.nodes.find(n => n.agentType === 'generator')
         if (generatorNode) {
           const feedback = verifyResult.issues.map(i => `[${i.severity}] ${i.description}\n建议：${i.suggestion}`).join('\n')
-          
+
           resetNodesForRetry(execution.nodes, generatorNode.id)
           if (verifierNode) {
             verifierNode.status = 'pending'
           }
-          
-          // Update generator input with feedback
+
           generatorNode.input = feedback
-          
           onProgress({ ...execution })
           continue
         }
@@ -97,7 +105,15 @@ export async function executeTask(
   execution.completedAt = Date.now()
   onProgress({ ...execution })
 
-  return execution
+  // Phase 4: Synthesize final response
+  const agentResults = execution.nodes
+    .filter(n => n.result)
+    .map(n => `### [${n.agentType}] ${n.task}\n${n.result!.output}`)
+    .join('\n\n---\n\n')
+
+  const finalResponse = await synthesizeResponse(config, userTask, taskSummary, agentResults)
+
+  return { type: 'task', response: finalResponse, dag: execution }
 }
 
 async function executeNode(

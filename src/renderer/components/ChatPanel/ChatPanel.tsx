@@ -57,24 +57,14 @@ const ChatPanel: React.FC = () => {
     addMessage(userMsg)
 
     try {
-      const result: DAGExecution = await window.omniflow.executeTask(activeLlmConfig, text)
-
-      const finalOutputs = result.nodes
-        .filter(n => n.agentType === 'generator' && n.result)
-        .map(n => `## ${n.task}\n\n${n.result?.output}`)
-        .join('\n\n')
-
-      const displayedOutput = finalOutputs || result.nodes
-        .filter(n => n.result)
-        .map(n => `### [${n.agentType}] ${n.task}\n\n${n.result?.output}`)
-        .join('\n\n') || '任务已完成，但未生成输出内容。'
+      const result = await window.omniflow.executeTask(activeLlmConfig, text)
 
       const assistantMsg: Message = {
         id: generateId(),
         role: 'assistant',
-        content: displayedOutput,
+        content: result.response,
         timestamp: Date.now(),
-        dagExecutionId: result.id,
+        dagExecutionId: (result as Record<string,unknown>).dag ? (result as Record<string,unknown>).dag.id as string : undefined,
       }
       addMessage(assistantMsg)
     } catch (err) {

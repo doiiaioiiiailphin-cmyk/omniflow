@@ -1,4 +1,4 @@
-export { runOrchestrator } from './orchestrator'
+export { classifyIntent, decomposeTask, synthesizeResponse } from './orchestrator'
 export { runRetriever } from './retriever'
 export { runSummarizer } from './summarizer'
 export { runGenerator } from './generator'

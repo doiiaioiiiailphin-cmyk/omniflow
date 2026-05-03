@@ -192,7 +192,7 @@ export async function startInteractive(options: InteractiveOptions): Promise<voi
 
     let firstProgress = true
     try {
-      const execution = await executeTask(config, line, (dag) => {
+      const result = await executeTask(config, line, (dag) => {
         stopSpinner()
         if (firstProgress) {
           console.log(`  DAG 已构建 — ${dag.nodes.length} 个子任务\n`)
@@ -206,17 +206,9 @@ export async function startInteractive(options: InteractiveOptions): Promise<voi
       })
 
       stopSpinner()
-      if (verbose) printSummary(execution, verbose)
+      if (verbose && result.dag) printSummary(result.dag, verbose)
 
-      const finalOutputs = execution.nodes
-        .filter(n => n.agentType === 'generator' && n.result)
-        .map(n => `## ${n.task}\n\n${n.result!.output}`)
-        .join('\n\n')
-
-      lastOutput = finalOutputs || execution.nodes
-        .filter(n => n.result)
-        .map(n => n.result!.output)
-        .join('\n\n')
+      lastOutput = result.response
 
       console.log('\n' + '═'.repeat(60))
       console.log(lastOutput)
