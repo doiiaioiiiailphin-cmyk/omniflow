@@ -1,5 +1,6 @@
 import React from 'react'
 import ChatPanel from '../ChatPanel/ChatPanel'
+import ConversationsList from '../ChatPanel/ConversationsList'
 import DAGFlow from '../DAGFlow/DAGFlow'
 import FileTree from '../FileTree/FileTree'
 import AgentLog from '../AgentLog/AgentLog'
@@ -8,7 +9,9 @@ import { useAppStore } from '../../stores/appStore'
 import { Files, GitBranch, Terminal } from 'lucide-react'
 
 const Layout: React.FC = () => {
-  const { showFileTree, showDAG, showAgentLog, toggleFileTree, toggleDAG, toggleAgentLog, isRunning } = useAppStore()
+  const { showFileTree, showDAG, showAgentLog, toggleFileTree, toggleDAG, toggleAgentLog, isRunning, currentDAG } = useAppStore()
+
+  const shouldShowDAG = showDAG || (isRunning && currentDAG && currentDAG.nodes.length > 0)
 
   return (
     <div className="h-screen w-screen flex flex-col bg-surface-950">
@@ -31,7 +34,7 @@ const Layout: React.FC = () => {
           </button>
           <button
             onClick={toggleDAG}
-            className={`px-3 py-1.5 rounded text-xs flex items-center gap-1.5 transition-colors ${showDAG ? 'bg-surface-700 text-surface-100' : 'text-surface-400 hover:text-surface-200'}`}
+            className={`px-3 py-1.5 rounded text-xs flex items-center gap-1.5 transition-colors ${shouldShowDAG ? 'bg-surface-700 text-surface-100' : 'text-surface-400 hover:text-surface-200'}`}
           >
             <GitBranch size={14} />
             工作流
@@ -55,7 +58,12 @@ const Layout: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* File Tree */}
+        {/* Left Sidebar - Conversations */}
+        <div className="w-52 border-r border-surface-800 shrink-0">
+          <ConversationsList />
+        </div>
+
+        {/* File Tree (toggleable) */}
         {showFileTree && (
           <div className="w-56 border-r border-surface-800 shrink-0">
             <FileTree />
@@ -67,8 +75,8 @@ const Layout: React.FC = () => {
           <ChatPanel />
         </div>
 
-        {/* Right Panels */}
-        {showDAG && (
+        {/* DAG Panel (auto-show during task, otherwise toggleable) */}
+        {shouldShowDAG && (
           <div className="w-80 border-l border-surface-800 shrink-0">
             <DAGFlow />
           </div>

@@ -6,11 +6,26 @@ import { Send, Loader2, Bot, User, GitBranch, AlertTriangle } from 'lucide-react
 import ReactMarkdown from 'react-markdown'
 
 const ChatPanel: React.FC = () => {
-  const { messages, addMessage, isRunning, setRunning, setCurrentDAG, activeLlmConfig, currentConversationId, newConversation } = useAppStore()
+  const { messages, addMessage, isRunning, setRunning, setCurrentDAG, activeLlmConfig, currentConversationId, newConversation, conversations, setConversations, updateMessage } = useAppStore()
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  const saveConv = (msgs: Message[]) => {
+    if (!currentConversationId) return
+    const convs = [...conversations]
+    const idx = convs.findIndex(c => c.id === currentConversationId)
+    if (idx >= 0) {
+      convs[idx].messages = msgs
+      convs[idx].updatedAt = Date.now()
+      if (convs[idx].title === '新对话' && msgs.length > 0) {
+        convs[idx].title = msgs[0].content.slice(0, 30) + (msgs[0].content.length > 30 ? '...' : '')
+      }
+      setConversations(convs)
+      window.omniflow.saveConversation(convs[idx])
+    }
+  }
 
   useEffect(() => {
     if (!currentConversationId) {
@@ -56,6 +71,9 @@ const ChatPanel: React.FC = () => {
     }
     addMessage(userMsg)
 
+    const msgsAfterUser = [...messages, userMsg]
+    saveConv(msgsAfterUser)
+
     try {
       const result = await window.omniflow.executeTask(activeLlmConfig, text)
 
@@ -67,6 +85,7 @@ const ChatPanel: React.FC = () => {
         dagExecutionId: (result as Record<string,unknown>).dag ? (result as Record<string,unknown>).dag.id as string : undefined,
       }
       addMessage(assistantMsg)
+      saveConv([...msgsAfterUser, assistantMsg])
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err)
       setError(`执行出错：${errMsg}`)
@@ -79,7 +98,6 @@ const ChatPanel: React.FC = () => {
       addMessage(errorMessage)
     } finally {
       setRunning(false)
-      setCurrentDAG(null)
     }
   }
 
