@@ -1,45 +1,18 @@
 import { LLMConfig, AgentResult } from '../types'
-import { llmChat } from '../llm/llm-router'
+import { llmChatWithTools } from '../llm/tool-router'
+import { AGENT_TOOLS } from '../llm/tools'
 import { skillRegistry } from '../skill/skill-registry'
 
-export async function runVerifier(config: LLMConfig, task: string, content: string, originalTask: string): Promise<AgentResult> {
+export async function runVerifier(config: LLMConfig, task: string, content: string, originalTask: string, workDir: string): Promise<AgentResult> {
   const skillPrompt = skillRegistry.getSkillPrompt('verifier', task)
 
-  const systemPrompt = `你是一个内容校验专家。你的任务是审查生成的内容，检查其质量和准确性。
+  const systemPrompt = `你是内容校验专家。${skillPrompt}
 
-${skillPrompt}
+JSON 输出：{"passed":true|false,"score":1-10,"issues":[{"severity":"critical|major|minor","description":"描述","suggestion":"建议"}],"summary":"总结"}
+规则：检查覆盖度、准确性、一致性、格式。评分低于6分触发重新生成。`
 
-请以 JSON 格式输出校验结果：
-\`\`\`json
-{
-  "passed": true|false,
-  "score": 1-10,
-  "issues": [
-    {
-      "severity": "critical|major|minor",
-      "description": "问题描述",
-      "suggestion": "改进建议"
-    }
-  ],
-  "summary": "校验总结"
-}
-\`\`\`
+  const userMessage = `原始任务：${originalTask}\n待校验内容：\n${content}\n请校验。`
+  const { content: result, tokens, duration } = await llmChatWithTools(config, systemPrompt, userMessage, AGENT_TOOLS, workDir)
 
-规则：
-1. 检查是否完整覆盖了原任务要求
-2. 检查内容的准确性、一致性和逻辑性
-3. 检查格式是否符合要求
-4. 识别潜在的遗漏或错误
-5. 评分低于6分表明需要重新生成`
-
-  const userMessage = `原始任务：${originalTask}\n\n待校验内容：\n${content}\n\n请校验。`
-
-  const { content: result, tokens, duration } = await llmChat(config, systemPrompt, userMessage)
-
-  return {
-    agentType: 'verifier',
-    output: result,
-    tokens,
-    duration,
-  }
+  return { agentType: 'verifier', output: result, tokens, duration }
 }

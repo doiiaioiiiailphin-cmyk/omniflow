@@ -192,7 +192,7 @@ export async function startInteractive(options: InteractiveOptions): Promise<voi
 
     let firstProgress = true
     try {
-      const result = await executeTask(config, line, (dag) => {
+      const result = await executeTask(config, line, workDir, (dag) => {
         stopSpinner()
         if (firstProgress) {
           console.log(`  DAG 已构建 — ${dag.nodes.length} 个子任务\n`)

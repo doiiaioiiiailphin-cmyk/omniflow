@@ -120,7 +120,7 @@ export function registerIpcHandlers(): void {
 
   // Task execution
   ipcMain.handle('execute-task', async (event, config: LLMConfig, userTask: string) => {
-    const execution = await executeTask(config, userTask, (progress: DAGExecution) => {
+    const execution = await executeTask(config, userTask, settings.workDir, (progress: DAGExecution) => {
       event.sender.send('task-progress', progress)
     })
     return execution

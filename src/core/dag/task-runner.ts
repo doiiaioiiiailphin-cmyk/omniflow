@@ -20,6 +20,7 @@ export interface TaskResult {
 export async function executeTask(
   config: LLMConfig,
   userTask: string,
+  workDir: string,
   onProgress: TaskProgressCallback
 ): Promise<TaskResult> {
   // Phase 1: Classify intent
@@ -51,7 +52,7 @@ export async function executeTask(
       if (ready.length === 0) break
 
       const results = await Promise.allSettled(
-        ready.map(node => executeNode(config, node, execution, userTask))
+        ready.map(node => executeNode(config, node, execution, userTask, workDir))
       )
 
       results.forEach((result, i) => {
@@ -120,7 +121,8 @@ async function executeNode(
   config: LLMConfig,
   node: DAGNode,
   execution: DAGExecution,
-  originalTask: string
+  originalTask: string,
+  workDir: string
 ): Promise<AgentResult> {
   node.status = 'running'
 
@@ -128,14 +130,14 @@ async function executeNode(
 
   switch (node.agentType) {
     case 'retriever':
-      return runRetriever(config, node.task, context)
+      return runRetriever(config, node.task, context, workDir)
     case 'summarizer':
-      return runSummarizer(config, node.task, context)
+      return runSummarizer(config, node.task, context, workDir)
     case 'generator':
-      return runGenerator(config, node.task, context, node.input)
+      return runGenerator(config, node.task, context, workDir, node.input)
     case 'verifier':
-      return runVerifier(config, node.task, context, originalTask)
+      return runVerifier(config, node.task, context, originalTask, workDir)
     default:
-      return runGenerator(config, node.task, context)
+      return runGenerator(config, node.task, context, workDir)
   }
 }

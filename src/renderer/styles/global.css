@@ -53,3 +53,19 @@ body {
   background: #3b82f6;
   border: 2px solid #1e293b;
 }
+
+/* Message wrapping */
+.prose {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.prose pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.prose code {
+  word-break: break-all;
+}

@@ -1,33 +1,27 @@
 import { LLMConfig, AgentResult } from '../types'
-import { llmChat } from '../llm/llm-router'
+import { llmChatWithTools } from '../llm/tool-router'
+import { AGENT_TOOLS } from '../llm/tools'
 import { skillRegistry } from '../skill/skill-registry'
 
-export async function runGenerator(config: LLMConfig, task: string, context: string, feedback?: string): Promise<AgentResult> {
+export async function runGenerator(config: LLMConfig, task: string, context: string, workDir: string, feedback?: string): Promise<AgentResult> {
   const skillPrompt = skillRegistry.getSkillPrompt('generator', task)
 
-  const systemPrompt = `你是一个内容生成专家。你的任务是根据提供的素材和指令，生成高质量的内容。
+  const systemPrompt = `你是内容生成专家。你有以下工具：
+- write_file: 将生成的内容写入文件
+- read_file: 读取参考文件
+- exec_command: 执行命令辅助生成
 
 ${skillPrompt}
 
-规则：
-1. 严格基于提供的素材生成内容，不要凭空编造
-2. 保持专业、准确、流畅的写作风格
-3. 根据指令要求的格式输出（报告、邮件、方案、代码等）
-4. 如果可能，提供多个选项供用户选择
-5. 标注生成过程中使用的外部引用`
+规则：基于素材生成，保持专业准确，按指令格式输出。如果用户提到具体文件名，将结果写入对应文件。`
 
-  let userMessage = `任务：${task}\n\n素材：\n${context}`
+  let userMessage = `任务：${task}\n素材：${context}`
   if (feedback) {
-    userMessage += `\n\n上一轮反馈（请据此改进）：\n${feedback}`
+    userMessage += `\n上一轮反馈（请据此改进）：\n${feedback}`
   }
-  userMessage += '\n\n请生成内容。'
+  userMessage += '\n请生成内容。如果用户指定了输出文件，请用 write_file 保存。'
 
-  const { content, tokens, duration } = await llmChat(config, systemPrompt, userMessage)
+  const { content, tokens, duration } = await llmChatWithTools(config, systemPrompt, userMessage, AGENT_TOOLS, workDir)
 
-  return {
-    agentType: 'generator',
-    output: content,
-    tokens,
-    duration,
-  }
+  return { agentType: 'generator', output: content, tokens, duration }
 }

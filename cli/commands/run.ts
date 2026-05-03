@@ -64,7 +64,7 @@ export async function runTask(options: RunOptions): Promise<void> {
   startSpinner('分析任务...')
 
   let firstProgress = true
-  const result = await executeTask(config, task, (dag) => {
+  const result = await executeTask(config, task, workDir, (dag) => {
     stopSpinner()
     if (firstProgress) {
       console.log(`\n  DAG 已构建 — ${dag.nodes.length} 个子任务\n`)
